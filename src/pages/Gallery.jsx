@@ -9,8 +9,6 @@ const CATEGORIES = [
   "Seasonal",
 ];
 
-// span is used in "All" view only — filtered view uses col-span-6 for every card
-// so there are never orphaned asymmetric columns when a category has fewer items.
 const ITEMS = [
   {
     id: 1,
@@ -110,14 +108,19 @@ export default function Gallery() {
   const filtered =
     active === "All" ? ITEMS : ITEMS.filter((item) => item.cat === active);
 
+  // On mobile: always use 2-col grid regardless of "All" or filtered
+  // On md+: asymmetric 12-col for "All", 2-col for filtered
+  const gridClass =
+    active === "All" ? "grid grid-cols-2 md:grid-cols-12" : "grid grid-cols-2";
+
   return (
     <main className="bg-[#FAF6F1] min-h-screen pb-20 text-[#2C1A0E]">
       {/* Header */}
-      <div className="px-8 pt-12 pb-8 flex flex-col gap-2">
+      <div className="px-6 md:px-8 pt-12 pb-8 flex flex-col gap-2">
         <span className="text-[11px] font-medium tracking-[0.18em] uppercase text-[#C4724A]">
           Made fresh daily · Brooklyn, NY
         </span>
-        <h1 className="font-playfair text-[42px] font-normal leading-[1.1]">
+        <h1 className="font-playfair text-[clamp(28px,6vw,42px)] font-normal leading-[1.1]">
           Baked with <em className="italic text-[#C4724A]">love</em>,<br />
           every single day.
         </h1>
@@ -128,7 +131,7 @@ export default function Gallery() {
       </div>
 
       {/* Filter Pills */}
-      <div className="px-8 pb-7 flex gap-2 flex-wrap">
+      <div className="px-6 md:px-8 pb-7 flex gap-2 flex-wrap">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
@@ -145,8 +148,8 @@ export default function Gallery() {
       </div>
 
       {/* Divider + count */}
-      <div className="mx-8 border-t border-[#E8DCCF] mb-4" />
-      <p className="px-8 mb-4 text-xs text-[#7A5C46] font-light">
+      <div className="mx-6 md:mx-8 border-t border-[#E8DCCF] mb-4" />
+      <p className="px-6 md:px-8 mb-4 text-xs text-[#7A5C46] font-light">
         {active === "All"
           ? `Showing all ${filtered.length} photos`
           : `Showing ${filtered.length} photo${
@@ -154,19 +157,13 @@ export default function Gallery() {
             } in ${active}`}
       </p>
 
-      {/* Grid
-          — "All" view: 12-col asymmetric layout using each item's span class
-          — Filtered view: clean 2-col grid so there are never orphaned gaps */}
-      <div
-        className={`px-8 gap-3 ${
-          active === "All" ? "grid grid-cols-12" : "grid grid-cols-2"
-        }`}
-      >
+      {/* Grid */}
+      <div className={`px-6 md:px-8 gap-3 ${gridClass}`}>
         {filtered.map((item) => (
           <div
             key={item.id}
-            className={`relative overflow-hidden rounded-[4px] bg-[#E8DCCF] group min-h-[280px] ${
-              active === "All" ? item.span : ""
+            className={`relative overflow-hidden rounded-[4px] bg-[#E8DCCF] group min-h-[200px] md:min-h-[280px] ${
+              active === "All" ? `md:${item.span}` : ""
             }`}
           >
             <img
@@ -178,24 +175,18 @@ export default function Gallery() {
 
             {/* Badge */}
             {item.label && (
-              <span className="absolute top-4 left-4 text-[10px] font-medium tracking-widest uppercase px-[10px] py-1 bg-[#FAF6F1] text-[#C4724A] rounded-full">
+              <span className="absolute top-3 left-3 text-[10px] font-medium tracking-widest uppercase px-[10px] py-1 bg-[#FAF6F1] text-[#C4724A] rounded-full">
                 {item.label}
               </span>
             )}
 
-            {/* Hover overlay
-                Fix: bottom gradient layer ensures text is always legible regardless
-                of how light or dark the underlying image is. Terracotta tint sits on
-                top; the gradient-to-black base locks in contrast on pale images. */}
+            {/* Hover overlay */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[280ms]">
-              {/* dark base gradient for legibility on light images */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1a0a02]/80 via-transparent to-transparent" />
-              {/* terracotta colour wash */}
               <div className="absolute inset-0 bg-[#C4724A]/60" />
-              {/* text */}
-              <div className="absolute inset-0 flex flex-col justify-end p-5">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-5">
                 <p
-                  className="text-xl italic font-normal text-white leading-snug drop-shadow-sm"
+                  className="text-lg md:text-xl italic font-normal text-white leading-snug drop-shadow-sm"
                   style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
                 >
                   {item.name}
@@ -210,9 +201,9 @@ export default function Gallery() {
       </div>
 
       {/* CTA strip */}
-      <div className="mx-8 mt-10 flex items-center gap-5">
+      <div className="mx-6 md:mx-8 mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <span
-          className="text-[22px] italic text-[#2C1A0E]"
+          className="text-[clamp(18px,4vw,22px)] italic text-[#2C1A0E]"
           style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
         >
           Want something custom?

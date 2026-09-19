@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import FadeIn from "./FadeIn";
 
 function Hero() {
@@ -31,12 +32,12 @@ function Hero() {
         </FadeIn>
         <FadeIn delay={300}>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <a
-              href="/menu"
+            <Link
+              to="/menu"
               className="font-inter text-[13px] font-bold bg-[#d9542d] text-[#fffaf2] px-8 py-4 rounded-full hover:opacity-90 transition-opacity duration-150"
             >
               View our menu
-            </a>
+            </Link>
             <a
               href="#contact"
               className="font-inter text-[13px] font-bold border-2 border-[#d9542d] text-[#d9542d] px-8 py-4 rounded-full hover:bg-[#d9542d] hover:text-[#fffaf2] transition-all duration-150"
